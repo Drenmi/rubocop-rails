@@ -1282,6 +1282,63 @@ Rails.env == :test
 Rails.env.production?
 ----
 
+== Rails/EnvironmentVariableAccess
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 2.10
+| -
+|===
+
+This cop looks for direct access to environment variables through the
+`ENV` variable within the application code. This can lead to runtime
+errors due to misconfiguration that could have been discovered at boot
+time if the environment variables were loaded as part of initialization
+and copied into the application's configuration or secrets. The cop can
+be configured to allow either reads or writes if required.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+ENV["FOO"]
+ENV.fetch("FOO")
+ENV["FOO"] = "bar"
+
+# good
+Rails.application.config.foo
+Rails.application.config.foo = "bar"
+Rails.application.config.x.foo.bar
+Rails.application.secrets.foo
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| Include
+| `app/**/*.rb`, `lib/**/*.rb`
+| Array
+
+| Exclude
+| `lib/**/*.rake`
+| Array
+
+| AllowReads
+| `false`
+| Boolean
+
+| AllowWrites
+| `false`
+| Boolean
+|===
+
 == Rails/Exit
 
 |===
